@@ -1,0 +1,50 @@
+name: deploy-blog
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'public/**/*'
+      - '.github/**/*'
+      - 'source/**/*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Deploy blog.
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: true # Checkout private submodules(themes or something else).
+    - name: Set timezone
+      uses: szenius/set-timezone@v1.2
+      with:
+        timezoneLinux: "Asia/Taipei"
+    
+    - name: Cache node modules
+      uses: actions/cache@v3
+      id: cache
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+    
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci
+      
+    - name: Deploy
+      id: deploy
+      uses: PttCodingMan/hexo-action@master
+      # uses: sma11black/hexo-action@v1.0.4
+      with:
+        deploy_key: ${{ secrets.DEPLOY_KEY }}
