@@ -44,6 +44,7 @@ jobs:
       
     - name: Deploy
       id: deploy
-      uses: PttCodingMan/hexo-action@master
+      # uses: PttCodingMan/hexo-action@master
+      uses: sma11black/hexo-action@v1.0.4
       with:
         deploy_key: ${{ secrets.DEPLOY_KEY }}
