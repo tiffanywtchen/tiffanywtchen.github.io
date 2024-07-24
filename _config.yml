@@ -101,6 +101,7 @@ theme: morgan
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repo: git@github.com:tiffanywtchen/tiffanywtchen.github.io.git
-  branch: hexo
+  - type: git
+    repo: git@github.com:tiffanywtchen/tiffanywtchen.github.io.git
+    branch: hexo
+
