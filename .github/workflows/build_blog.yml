@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'public/**/*'
-      - '.github/**/*'
-      - 'source/**/*'
   workflow_dispatch:
 
 jobs:
@@ -32,19 +28,21 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-    
     - name: Install Dependencies
       if: steps.cache.outputs.cache-hit != 'true'
       run: npm ci
-      
+      #run: npm install
+
+    # Deploy hexo blog website.
     - name: Deploy
       id: deploy
       uses: PttCodingMan/hexo-action@master
-      # uses: sma11black/hexo-action@v1.0.4
       with:
         deploy_key: ${{ secrets.DEPLOY_KEY }}
+        #user_name: your github username  # (or delete this input setting to use bot account)
+        #user_email: your github useremail  # (or delete this input setting to use bot account)
+        #commit_msg: ${{ github.event.head_commit.message }}  # (or delete this input setting to use hexo default settings)
+    # Use the output from the `deploy` step(use for test action)
+    - name: Get the output
+      run: |
+        echo "${{ steps.deploy.outputs.notify }}"
